@@ -1,0 +1,5 @@
+package cccondense
+
+func main() {
+
+}
