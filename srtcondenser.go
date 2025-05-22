@@ -84,3 +84,7 @@ func condenseSrt(parsedSrts []srt) []srt {
 
 	return result
 }
+
+func writeSrt(parsedSrts []srt, outputPath string) {
+
+}

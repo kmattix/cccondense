@@ -100,6 +100,21 @@ func TestParseSrtMultiLine(t *testing.T) {
 	}
 }
 
+func TestWriteSrt(t *testing.T) {
+	file, err := os.Open("test-data/test.srt")
+	check(err)
+	expected := parseSrt(*file)
+
+	writeSrt(expected, "test-data/writetest.srt")
+	writtenFile, err := os.Open("test-data/writetest.srt")
+	check(err)
+	actual := parseSrt(*writtenFile)
+
+	if !slices.Equal(actual, expected) {
+		t.Errorf("writeSrt(%v) = \n%v; want \n%v", file.Name(), actual, expected)
+	}
+}
+
 func TestCondenseSrt(t *testing.T) {
 	data := []srt{
 		srt{
