@@ -28,12 +28,12 @@ Precompiled binaries for **Windows**, **macOS**, and **Linux** are available in 
 
 ### From Source
 
-To build from source, ensure you have [Go installed](https://golang.org/dl/) (version 1.24.3 or later), then run:
+To build from source, ensure you have [Go installed](https://golang.org/dl/) (version 1.24.3 or later), clone the repository, then run:
 
 ```bash
 go build -o cccondense cccondense.go srtcondenser.go
 ```
-or
+or run this without needing to clone:
 ```bash
 go install github.com/kmattix/cccondense
 ```
