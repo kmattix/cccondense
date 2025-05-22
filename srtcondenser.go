@@ -36,9 +36,9 @@ func newSrt(blob string) *srt {
 	}
 }
 
-func parseSrt(file os.File) []srt {
+func ParseSrt(file *os.File) []srt {
 	parsedSrts := []srt{}
-	scanner := bufio.NewScanner(&file)
+	scanner := bufio.NewScanner(file)
 
 	unparsedSection := ""
 	for scanner.Scan() {
@@ -57,7 +57,7 @@ func parseSrt(file os.File) []srt {
 	return parsedSrts
 }
 
-func condenseSrt(parsedSrts []srt) []srt {
+func CondenseSrt(parsedSrts []srt) []srt {
 	if len(parsedSrts) == 0 {
 		return []srt{}
 	}
@@ -85,7 +85,7 @@ func condenseSrt(parsedSrts []srt) []srt {
 	return result
 }
 
-func writeSrt(parsedSrts []srt, path string) {
+func WriteSrt(parsedSrts []srt, path string) {
 	output := ""
 
 	for _, srt := range parsedSrts {

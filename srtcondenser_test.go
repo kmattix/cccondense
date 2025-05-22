@@ -30,7 +30,7 @@ func TestParseSrtSingleLine(t *testing.T) {
 	file, err := os.Open("test-data/test1.srt")
 	check(err)
 	defer file.Close()
-	actual := parseSrt(*file)
+	actual := ParseSrt(file)
 
 	expected := []srt{
 		{
@@ -65,7 +65,7 @@ func TestParseSrtMultiLine(t *testing.T) {
 	file, err := os.Open("test-data/test2.srt")
 	check(err)
 	defer file.Close()
-	actual := parseSrt(*file)
+	actual := ParseSrt(file)
 
 	expected := []srt{{
 		count:     1,
@@ -95,13 +95,13 @@ func TestWriteSrt(t *testing.T) {
 	file, err := os.Open("test-data/test.srt")
 	check(err)
 	defer file.Close()
-	expected := parseSrt(*file)
+	expected := ParseSrt(file)
 
-	writeSrt(expected, "test-data/writetest.srt")
+	WriteSrt(expected, "test-data/writetest.srt")
 	writtenFile, err := os.Open("test-data/writetest.srt")
 	check(err)
 	defer writtenFile.Close()
-	actual := parseSrt(*writtenFile)
+	actual := ParseSrt(writtenFile)
 
 	if !slices.Equal(actual, expected) {
 		t.Errorf("writeSrt(%v) = \n%v; want \n%v", file.Name(), actual, expected)
@@ -140,7 +140,7 @@ func TestCondenseSrt(t *testing.T) {
 		},
 	}
 
-	actual := condenseSrt(data)
+	actual := CondenseSrt(data)
 
 	expected := []srt{
 		{

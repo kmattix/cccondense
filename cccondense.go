@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 )
 
@@ -13,13 +13,21 @@ func check(e error) {
 
 func main() {
 	args := os.Args[1:]
-	if len(args) != 1 {
-		log.Fatalf("Expeced 1 arguments, got %v.", len(args))
+	if len(args) != 2 {
+		fmt.Printf("Expeced 2 arguments, got %v.\n", len(args))
+		os.Exit(1)
 	}
-	path := args[0]
 
-	file, err := os.Open(path)
+	inputPath := args[0]
+	outputPath := args[1]
+
+	file, err := os.Open(inputPath)
 	check(err)
 	defer file.Close()
 
+	parsedSrts := ParseSrt(file)
+	condensedSrts := CondenseSrt(parsedSrts)
+
+	WriteSrt(condensedSrts, outputPath)
+	fmt.Printf("Condesed SRT written to: %s\n", outputPath)
 }
