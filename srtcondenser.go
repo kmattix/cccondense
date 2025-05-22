@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -14,16 +15,25 @@ type srt struct {
 }
 
 func newSrt(blob string) *srt {
-	lines := strings.Split(blob, "\n")
-	s := srt{
-		timestamp: lines[1],
-		subtitle:  lines[2],
+	lines := strings.Split(strings.TrimSpace(blob), "\n")
+	if len(lines) < 3 {
+		panic(fmt.Sprintf("Invalid SRT block (expected at least 3 lines): %q", blob))
 	}
+
 	count, err := strconv.Atoi(lines[0])
-	if err == nil {
-		s.count = count
+	if err != nil {
+		panic(fmt.Sprintf("Invalid count in block: %q", lines[0]))
 	}
-	return &s
+
+	timestamp := strings.TrimSpace(lines[1])
+
+	subtle := strings.Join(lines[2:], "\n")
+
+	return &srt{
+		count:     count,
+		timestamp: timestamp,
+		subtitle:  subtle,
+	}
 }
 
 func parseSrt(file os.File) []srt {
@@ -32,29 +42,45 @@ func parseSrt(file os.File) []srt {
 
 	unparsedSection := ""
 	for scanner.Scan() {
-		scannedLine := scanner.Text()
-		if strings.TrimSpace(scannedLine) == "" {
-			if unparsedSection != "" {
-				parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
-				unparsedSection = ""
-			}
-		} else {
-			if unparsedSection != "" {
-				unparsedSection += "\n"
-			}
-			unparsedSection += scannedLine
+		line := scanner.Text()
+		unparsedSection += fmt.Sprintf("%s\n", line)
+		if strings.TrimSpace(line) == "" {
+			parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
+			unparsedSection = ""
 		}
 	}
 
-	if unparsedSection != "" {
+	if strings.TrimSpace(unparsedSection) != "" {
 		parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
 	}
 
 	return parsedSrts
 }
 
-func condenseSrt(parsedSrts []srt) []srt {
-	condensedSrts := []srt{}
+func condenseSrt(subs []srt) []srt {
+	if len(subs) == 0 {
+		return []srt{}
+	}
 
-	return condensedSrts
+	var result []srt
+	i := 0
+
+	for i < len(subs) {
+		curr := subs[i]
+		j := i + 1
+
+		for j < len(subs) && subs[j].timestamp == curr.timestamp {
+			curr.subtitle += "\n" + subs[j].subtitle
+			j++
+		}
+
+		result = append(result, curr)
+		i = j
+	}
+
+	for i := range result {
+		result[i].count = i + 1
+	}
+
+	return result
 }

@@ -1,19 +1,17 @@
 1
 00:00:03,330 --> 00:00:06,560
 Gentlemen, <i>Star Wars</i> Day
+is rapidly
+approaching.
 
 2
-00:00:03,330 --> 00:00:06,560
-is rapidly approaching.
-
-3
 00:00:06,770 --> 00:00:08,360
 We should finalize our plans.
 
-4
+3
 00:00:08,570 --> 00:00:10,540
 What? That's a real thing?
 
-5
+4
 00:00:11,510 --> 00:00:13,670
 What is it, <i>Star Wars</i> Christmas?
