@@ -27,7 +27,7 @@ func newSrt(blob string) *srt {
 }
 
 func parseSrt(file os.File) []srt {
-	parsedSlc := []srt{}
+	parsedSrts := []srt{}
 	scanner := bufio.NewScanner(&file)
 
 	unparsedSection := ""
@@ -35,7 +35,7 @@ func parseSrt(file os.File) []srt {
 		scannedLine := scanner.Text()
 		if strings.TrimSpace(scannedLine) == "" {
 			if unparsedSection != "" {
-				parsedSlc = append(parsedSlc, *newSrt(unparsedSection))
+				parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
 				unparsedSection = ""
 			}
 		} else {
@@ -47,8 +47,14 @@ func parseSrt(file os.File) []srt {
 	}
 
 	if unparsedSection != "" {
-		parsedSlc = append(parsedSlc, *newSrt(unparsedSection))
+		parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
 	}
 
-	return parsedSlc
+	return parsedSrts
+}
+
+func condenseSrt(parsedSrts []srt) []srt {
+	condensedSrts := []srt{}
+
+	return condensedSrts
 }
