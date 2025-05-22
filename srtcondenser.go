@@ -57,20 +57,20 @@ func parseSrt(file os.File) []srt {
 	return parsedSrts
 }
 
-func condenseSrt(subs []srt) []srt {
-	if len(subs) == 0 {
+func condenseSrt(parsedSrts []srt) []srt {
+	if len(parsedSrts) == 0 {
 		return []srt{}
 	}
 
 	var result []srt
 	i := 0
 
-	for i < len(subs) {
-		curr := subs[i]
+	for i < len(parsedSrts) {
+		curr := parsedSrts[i]
 		j := i + 1
 
-		for j < len(subs) && subs[j].timestamp == curr.timestamp {
-			curr.subtitle += "\n" + subs[j].subtitle
+		for j < len(parsedSrts) && parsedSrts[j].timestamp == curr.timestamp {
+			curr.subtitle += "\n" + parsedSrts[j].subtitle
 			j++
 		}
 
