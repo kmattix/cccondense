@@ -33,6 +33,10 @@ To build from source, ensure you have [Go installed](https://golang.org/dl/) (ve
 ```bash
 go build -o cccondense cccondense.go srtcondenser.go
 ```
+or
+```bash
+go install github.com/kmattix/cccondense
+```
 
 ## Notes
 
