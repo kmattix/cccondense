@@ -85,6 +85,12 @@ func condenseSrt(parsedSrts []srt) []srt {
 	return result
 }
 
-func writeSrt(parsedSrts []srt, outputPath string) {
+func writeSrt(parsedSrts []srt, path string) {
+	output := ""
 
+	for _, srt := range parsedSrts {
+		output += fmt.Sprintf("%d\n%s\n%s\n\n", srt.count, srt.timestamp, srt.subtitle)
+	}
+
+	os.WriteFile(path, []byte(output), 0644)
 }
