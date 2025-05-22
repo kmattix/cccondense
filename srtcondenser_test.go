@@ -26,6 +26,7 @@ Gentlemen, <i>Star Wars</i> Day
 
 }
 
+// TODO: Add tests parser needs to handle multi-line subtitles
 func TestParseSrt(t *testing.T) {
 	file, err := os.Open("test-data/test.srt")
 	check(err)
