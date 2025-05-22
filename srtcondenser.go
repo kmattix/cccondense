@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -22,4 +24,31 @@ func newSrt(blob string) *srt {
 		s.count = count
 	}
 	return &s
+}
+
+func parseSrt(file os.File) []srt {
+	out := []srt{}
+	scanner := bufio.NewScanner(&file)
+
+	curr := ""
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.TrimSpace(line) == "" {
+			if curr != "" {
+				out = append(out, *newSrt(curr))
+				curr = ""
+			}
+		} else {
+			if curr != "" {
+				curr += "\n"
+			}
+			curr += line
+		}
+	}
+
+	if curr != "" {
+		out = append(out, *newSrt(curr))
+	}
+
+	return out
 }
