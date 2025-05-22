@@ -27,28 +27,28 @@ func newSrt(blob string) *srt {
 }
 
 func parseSrt(file os.File) []srt {
-	out := []srt{}
+	parsedSlc := []srt{}
 	scanner := bufio.NewScanner(&file)
 
-	curr := ""
+	unparsedSection := ""
 	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.TrimSpace(line) == "" {
-			if curr != "" {
-				out = append(out, *newSrt(curr))
-				curr = ""
+		scannedLine := scanner.Text()
+		if strings.TrimSpace(scannedLine) == "" {
+			if unparsedSection != "" {
+				parsedSlc = append(parsedSlc, *newSrt(unparsedSection))
+				unparsedSection = ""
 			}
 		} else {
-			if curr != "" {
-				curr += "\n"
+			if unparsedSection != "" {
+				unparsedSection += "\n"
 			}
-			curr += line
+			unparsedSection += scannedLine
 		}
 	}
 
-	if curr != "" {
-		out = append(out, *newSrt(curr))
+	if unparsedSection != "" {
+		parsedSlc = append(parsedSlc, *newSrt(unparsedSection))
 	}
 
-	return out
+	return parsedSlc
 }
