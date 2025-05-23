@@ -1,9 +1,11 @@
-package main
+package condenser
 
 import (
 	"os"
 	"slices"
 	"testing"
+
+	"github.com/kmattix/cccondense/internal/utils"
 )
 
 func TestNewSrt(t *testing.T) {
@@ -12,9 +14,9 @@ func TestNewSrt(t *testing.T) {
 Gentlemen, <i>Star Wars</i> Day
 
 `
-	actual := newSrt(data)
+	actual := NewSrt(data)
 
-	expected := srt{
+	expected := Srt{
 		count:     1,
 		timestamp: "00:00:03,330 --> 00:00:06,560",
 		subtitle:  "Gentlemen, <i>Star Wars</i> Day",
@@ -27,12 +29,12 @@ Gentlemen, <i>Star Wars</i> Day
 }
 
 func TestParseSrtSingleLine(t *testing.T) {
-	file, err := os.Open("test-data/test1.srt")
-	check(err)
+	file, err := os.Open("testdata/test1.srt")
+	utils.Check(err)
 	defer file.Close()
 	actual := ParseSrt(file)
 
-	expected := []srt{
+	expected := []Srt{
 		{
 			count:     1,
 			timestamp: "00:00:03,330 --> 00:00:06,560",
@@ -62,12 +64,12 @@ func TestParseSrtSingleLine(t *testing.T) {
 }
 
 func TestParseSrtMultiLine(t *testing.T) {
-	file, err := os.Open("test-data/test2.srt")
-	check(err)
+	file, err := os.Open("testdata/test2.srt")
+	utils.Check(err)
 	defer file.Close()
 	actual := ParseSrt(file)
 
-	expected := []srt{{
+	expected := []Srt{{
 		count:     1,
 		timestamp: "00:00:03,330 --> 00:00:06,560",
 		subtitle:  "Gentlemen, <i>Star Wars</i> Day\nis rapidly\napproaching.",
@@ -92,14 +94,14 @@ func TestParseSrtMultiLine(t *testing.T) {
 }
 
 func TestWriteSrt(t *testing.T) {
-	file, err := os.Open("test-data/test.srt")
-	check(err)
+	file, err := os.Open("testdata/test.srt")
+	utils.Check(err)
 	defer file.Close()
 	expected := ParseSrt(file)
 
-	WriteSrt(expected, "test-data/writetest.srt")
-	writtenFile, err := os.Open("test-data/writetest.srt")
-	check(err)
+	WriteSrt(expected, "testdata/writetest.srt")
+	writtenFile, err := os.Open("testdata/writetest.srt")
+	utils.Check(err)
 	defer writtenFile.Close()
 	actual := ParseSrt(writtenFile)
 
@@ -111,7 +113,7 @@ func TestWriteSrt(t *testing.T) {
 }
 
 func TestCondenseSrt(t *testing.T) {
-	data := []srt{
+	data := []Srt{
 		{
 			count:     1,
 			timestamp: "00:00:03,330 --> 00:00:06,560",
@@ -142,7 +144,7 @@ func TestCondenseSrt(t *testing.T) {
 
 	actual := CondenseSrt(data)
 
-	expected := []srt{
+	expected := []Srt{
 		{
 			count:     1,
 			timestamp: "00:00:03,330 --> 00:00:06,560",

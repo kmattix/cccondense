@@ -1,4 +1,4 @@
-package main
+package condenser
 
 import (
 	"bufio"
@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-type srt struct {
+type Srt struct {
 	count     int
 	timestamp string
 	subtitle  string
 }
 
-func newSrt(blob string) *srt {
+func NewSrt(blob string) *Srt {
 	lines := strings.Split(strings.TrimSpace(blob), "\n")
 	if len(lines) < 3 {
 		panic(fmt.Sprintf("Invalid SRT block (expected at least 3 lines): %q", blob))
@@ -29,15 +29,15 @@ func newSrt(blob string) *srt {
 
 	subtle := strings.Join(lines[2:], "\n")
 
-	return &srt{
+	return &Srt{
 		count:     count,
 		timestamp: timestamp,
 		subtitle:  subtle,
 	}
 }
 
-func ParseSrt(file *os.File) []srt {
-	parsedSrts := []srt{}
+func ParseSrt(file *os.File) []Srt {
+	parsedSrts := []Srt{}
 	scanner := bufio.NewScanner(file)
 
 	unparsedSection := ""
@@ -45,24 +45,24 @@ func ParseSrt(file *os.File) []srt {
 		line := scanner.Text()
 		unparsedSection += fmt.Sprintf("%s\n", line)
 		if strings.TrimSpace(line) == "" {
-			parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
+			parsedSrts = append(parsedSrts, *NewSrt(unparsedSection))
 			unparsedSection = ""
 		}
 	}
 
 	if strings.TrimSpace(unparsedSection) != "" {
-		parsedSrts = append(parsedSrts, *newSrt(unparsedSection))
+		parsedSrts = append(parsedSrts, *NewSrt(unparsedSection))
 	}
 
 	return parsedSrts
 }
 
-func CondenseSrt(parsedSrts []srt) []srt {
+func CondenseSrt(parsedSrts []Srt) []Srt {
 	if len(parsedSrts) == 0 {
-		return []srt{}
+		return []Srt{}
 	}
 
-	var result []srt
+	var result []Srt
 	i := 0
 
 	for i < len(parsedSrts) {
@@ -85,7 +85,7 @@ func CondenseSrt(parsedSrts []srt) []srt {
 	return result
 }
 
-func WriteSrt(parsedSrts []srt, path string) {
+func WriteSrt(parsedSrts []Srt, path string) {
 	output := ""
 
 	for _, srt := range parsedSrts {
