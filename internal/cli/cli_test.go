@@ -4,15 +4,16 @@ import "testing"
 
 func TestRun(t *testing.T) {
 	/*
-		Useage: cccondense [OPTION]... FILE... [DEST]
-				cccondense [OPTION]... DIRECTORY [DEST]
-			Condenses closed-caption file(s). When DEST is not specified it will save a new file to the
-			source DIRECTORY in the format of FILE-condensed.EXTENSTION
+		Usage:
+			cccondense [OPTION]... FILE [DEST]
+			cccondense [OPTION]... DIRECTORY [DEST]
+		Condenses closed-caption file(s).
+		When DEST is not specified, the program saves a new file in the source directory with the name
+		format FILE-condensed.EXTENSION
 
 		OPTION
-			-r, --recursive			condenses all closed-caption FILEs in a directory and their
-									contents recursively
-			-v, --verbose			displays the progress of what is being done
-			-w, --write				overwites on top of the source FILE that is being condensed in place
+			-r, --recursive		Condense all closed-caption files in the directory and its subdirectories.
+			-v, --verbose		Display progress information.
+			-w, --write			Overwrite the original file with the condensed version.
 	*/
 }
