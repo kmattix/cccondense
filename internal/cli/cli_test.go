@@ -1,6 +1,14 @@
 package cli
 
-import "testing"
+import (
+	"io"
+	"os"
+	"reflect"
+	"testing"
+
+	"github.com/kmattix/cccondense/internal/condenser"
+	"github.com/kmattix/cccondense/internal/utils"
+)
 
 func TestRun(t *testing.T) {
 	/*
@@ -46,15 +54,58 @@ func TestValidateExtensionFalse(t *testing.T) {
 }
 
 func TestHandleFile(t *testing.T) {
-
+	path := "testdata/test.srt"
+	expected := "testdata/test" + fileSuffix + ".srt"
+	handleFile(path, "", false)
+	err := os.Remove(expected)
+	if err != nil {
+		t.Errorf("handleFile(%s) = %v; want %s", path, err, expected)
+	}
 }
 
-func TestHandleFileDest(t *testing.T) {
+func TestHandleFileDestFile(t *testing.T) {
+	path := "testdata/test.srt"
+	expected := "testdata/somedir/anotherfilename.srt"
+	handleFile(path, expected, false)
+	err := os.Remove(expected)
+	if err != nil {
+		t.Errorf("handleFile(%s) = %v; want %s", path, err, expected)
+	}
+}
 
+func TestHandleFileDestDir(t *testing.T) {
+	path := "testdata/test.srt"
+	outPath := "testdata/somedir/"
+	expected := "testdata/somedir/test.srt"
+	handleFile(path, outPath, false)
+	err := os.Remove(expected)
+	if err != nil {
+		t.Errorf("handleFile(%s) = %v; want %s", path, err, expected)
+	}
 }
 
 func TestHandleFileWrite(t *testing.T) {
+	tempFile, err := os.Create("testdata/temp.srt")
+	utils.Check(err)
+	defer tempFile.Close()
 
+	file, err := os.Open("testdata/test.srt")
+	utils.Check(err)
+	defer file.Close()
+
+	io.Copy(file, tempFile)
+
+	handleFile("testdata/test.srt", "", true)
+
+	expected := condenser.CondenseSrt(condenser.ParseSrt(tempFile))
+	actual := condenser.ParseSrt(file)
+
+	if reflect.DeepEqual(expected, actual) {
+		t.Errorf("handleFile(%v) = %v; want %v", file, actual, expected)
+	}
+
+	io.Copy(tempFile, file)
+	os.Remove("testdata/temp.srt")
 }
 func TestHandleFileWriteDest(t *testing.T) {
 

@@ -11,7 +11,7 @@ type Flags struct {
 	Write     bool
 }
 
-const fileSuffix = "-condensed"
+const fileSuffix = "_condensed"
 
 func Run(args []string, flags Flags) error {
 	return errors.New("not implemented")
