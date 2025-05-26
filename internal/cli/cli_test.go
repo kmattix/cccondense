@@ -85,27 +85,27 @@ func TestHandleFileDestDir(t *testing.T) {
 }
 
 func TestHandleFileWrite(t *testing.T) {
-	tempFile, err := os.Create("testdata/temp.srt")
-	utils.Check(err)
-	defer tempFile.Close()
-
+	//copy test file to new temp file
 	file, err := os.Open("testdata/test.srt")
+	utils.Check(err)
+	file.Close()
+	temp, err := os.Create("testdata/temp.srt")
+	utils.Check(err)
+	defer temp.Close()
+	io.Copy(file, temp)
+
+	handleFile("testdata/test.srt", "", true)
+	file, err = os.Open("testdata/test.srt")
 	utils.Check(err)
 	defer file.Close()
 
-	io.Copy(file, tempFile)
+	tempCondensed := condenser.CondenseSrt(condenser.ParseSrt(temp))
+	fileCondensed := condenser.ParseSrt(file)
 
-	handleFile("testdata/test.srt", "", true)
-
-	expected := condenser.CondenseSrt(condenser.ParseSrt(tempFile))
-	actual := condenser.ParseSrt(file)
-
-	if reflect.DeepEqual(expected, actual) {
-		t.Errorf("handleFile(%v) = %v; want %v", file, actual, expected)
+	if !reflect.DeepEqual(tempCondensed, fileCondensed) {
+		t.Errorf("handleFile(\"testdata/test.srt\", \"\", true) = %v; want %v", fileCondensed, tempCondensed)
 	}
 
-	io.Copy(tempFile, file)
-	os.Remove("testdata/temp.srt")
 }
 func TestHandleFileWriteDest(t *testing.T) {
 
